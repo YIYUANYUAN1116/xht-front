@@ -1,7 +1,7 @@
 ﻿import type { RequestOptions } from '@@/plugin-request/request';
 import type { RequestConfig } from '@umijs/max';
 import { message, notification } from 'antd';
-
+import { REMOVE_TOKEN } from './utils/tokenUtil';
 // 错误处理方案： 错误类型
 enum ErrorShowType {
   SILENT = 0,
@@ -68,6 +68,9 @@ export const errorConfig: RequestConfig = {
             default:
               message.error(errorMessage);
           }
+          if(errorCode===401){
+            REMOVE_TOKEN();
+          }                                                                                                                                                                
         }
       } else if (error.response) {
         // Axios 的错误

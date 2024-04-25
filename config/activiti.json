@@ -1,0 +1,221 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "xht-back API接口文档",
+    "description": "xht-back API接口文档",
+    "contact": {
+      "name": "xht"
+    },
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8092",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/activiti/deploy": {
+      "post": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "部署",
+        "operationId": "deploy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "name": "file",
+                    "in": "query"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activiti/apply": {
+      "post": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "开启一个流程",
+        "operationId": "apply",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activiti/getHiTaskById": {
+      "get": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "获取用户task",
+        "operationId": "getHiTaskById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activiti/getCurTaskById": {
+      "get": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "获取用户待处理task",
+        "operationId": "getCurTaskById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activiti/deployList": {
+      "get": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "流程定义信息",
+        "operationId": "deployList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Result": {
+        "type": "object",
+        "properties": {
+          "errorCode": {
+            "type": "integer",
+            "description": "业务状态码",
+            "format": "int32"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "响应状态"
+          },
+          "errorMessage": {
+            "type": "string",
+            "description": "响应消息"
+          },
+          "showType": {
+            "type": "string",
+            "description": "响应类型"
+          },
+          "data": {
+            "type": "object",
+            "description": "业务数据"
+          }
+        },
+        "description": "响应结果实体类"
+      },
+      "ApplyDto": {
+        "type": "object",
+        "properties": {
+          "procDefId": {
+            "type": "string"
+          },
+          "paramMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}

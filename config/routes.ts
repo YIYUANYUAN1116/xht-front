@@ -51,6 +51,30 @@ export default [
     path: '/list',
     component: './TableList',
   },
+
+  {
+
+    path: '/workflow',
+    name: '流程管理',
+    icon: 'table',
+    routes:[
+      {
+        path: '/workflow',
+        redirect: '/workflow/model',
+      },
+      {
+        path: '/workflow/model',
+        name: '流程模型',
+        component: './WorkFlow/Model',
+      },
+      {
+        path: '/workflow/deploy',
+        name: '流程部署',
+        component: './WorkFlow/Deploy',
+      },
+    ]
+  },
+
   {
     path: '/',
     redirect: '/welcome',
