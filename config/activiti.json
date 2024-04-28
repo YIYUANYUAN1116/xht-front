@@ -33,9 +33,7 @@
                 "properties": {
                   "file": {
                     "type": "string",
-                    "format": "binary",
-                    "name": "file",
-                    "in": "query"
+                    "format": "binary"
                   }
                 }
               }
@@ -92,7 +90,7 @@
         "tags": [
           "工作流接口"
         ],
-        "summary": "获取用户task",
+        "summary": "获取用户历史task",
         "operationId": "getHiTaskById",
         "parameters": [
           {
@@ -158,6 +156,65 @@
         ],
         "summary": "流程定义信息",
         "operationId": "deployList",
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "deployName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/activiti/completeTask": {
+      "get": {
+        "tags": [
+          "工作流接口"
+        ],
+        "summary": "完成任务",
+        "operationId": "completeTask",
+        "parameters": [
+          {
+            "name": "completeTaskDto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/CompleteTaskDto"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -206,6 +263,23 @@
         "type": "object",
         "properties": {
           "procDefId": {
+            "type": "string"
+          },
+          "paramMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "CompleteTaskDto": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "operation": {
             "type": "string"
           },
           "paramMap": {

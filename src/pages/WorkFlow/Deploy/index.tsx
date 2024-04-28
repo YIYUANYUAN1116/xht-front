@@ -1,6 +1,6 @@
-import { ACTIVITI_URL } from '@/services/workflow/deploy/api';
+
+import { deployList } from '@/services/workflow/deploy/api';
 import { GET_TOKEN } from '@/utils/tokenUtil';
-import { InboxOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
 import { PageContainer, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
@@ -9,31 +9,18 @@ import Dragger from 'antd/lib/upload/Dragger';
 import { useState } from 'react';
 
 export type TableListItem = {
-  procdefId: number; //流程定义ID
-  deployId_: string; //流程部署ID
-  procdefKey_: string; //流程定义key
-  procdefName_: string; //流程名称
-  resourceName_: string; //流程资源
-  deployTime_: number;
-  version_: string;
+  deployName: number; //流程定义ID
+  procDefId: number; //流程定义ID
+  deployId: string; //流程部署ID
+  procDefName: string; //流程名称
+  resourceName: string; //流程资源
+  deployTime: number;
+  version: string;
 };
 
 export default () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tableListDataSource: TableListItem[] = [];
-  const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
- 
-  for (let i = 1; i <= 5; i += 1) {
-    tableListDataSource.push({
-      procdefId: i,
-      deployId_: 'AppName' + i,
-      procdefKey_: 'AppName' + i,
-      procdefName_: creators[Math.floor(Math.random() * creators.length)],
-      resourceName_: '' + i,
-      deployTime_: Date.now() - Math.floor(Math.random() * 2000),
-      version_: '' + i,
-    });
-  }
 
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -41,38 +28,43 @@ export default () => {
       dataIndex: 'index',
       valueType: 'indexBorder',
       width: 48,
+      fixed: true,
+      search:false
+    
+    },
+    {
+      title: '流程名称',
+      dataIndex: 'procDefName',
+      width: 120,
+    },
+
+
+    {
+      title: '流程名称',
+      dataIndex: 'deployName',
+      width: 120,
+      search:false,
+      fixed: true,
     },
 
     {
       title: '流程定义ID',
-      dataIndex: 'procdefId',
+      dataIndex: 'procDefId',
       width: 120,
       fixed: true,
+      search:false
     },
 
     {
       title: '流程部署ID',
-      dataIndex: 'deployId_',
+      dataIndex: 'deployId',
       width: 120,
-      fixed: true,
-    },
-
-    {
-      title: '流程定义ID',
-      dataIndex: 'procdefKey_',
-      search: false,
-      width: 120,
-    },
-
-    {
-      title: '流程名称',
-      dataIndex: 'procdefName_',
-      width: 120,
+      search:false
     },
 
     {
       title: '流程资源',
-      dataIndex: 'resourceName_',
+      dataIndex: 'resourceName',
       search: false,
       width: 120,
     },
@@ -80,15 +72,8 @@ export default () => {
     {
       title: '创建者',
       dataIndex: 'creator',
-      valueEnum: {
-        all: { text: '全部' },
-        付小小: { text: '付小小' },
-        曲丽丽: { text: '曲丽丽' },
-        林东东: { text: '林东东' },
-        陈帅帅: { text: '陈帅帅' },
-        兼某某: { text: '兼某某' },
-      },
       width: 120,
+      search:false
     },
     {
       title: '版本',
@@ -96,24 +81,21 @@ export default () => {
       width: 120,
       search: false,
     },
-    {
-      title: '分类',
-      dataIndex: 'category',
-      width: 120,
-      search: false,
-    },
+    
 
     {
       title: '创建时间',
-      dataIndex: 'deployTime_',
+      dataIndex: 'deployTime',
       width: 120,
       valueType: 'dateTime',
+      search: false,
     },
     {
       title: '操作',
       width: 180,
       key: 'option',
       valueType: 'option',
+      fixed: 'right',
       render: () => [<a key="link">查看</a>, <a key="link2">下载</a>, <a key="link3">删除</a>],
     },
   ];
@@ -124,7 +106,7 @@ export default () => {
   const props: UploadProps = {
     name: 'file',
     multiple: false,
-    action: ACTIVITI_URL.DEPLOY_URL,
+    action: '/activiti/deploy',
     headers: {
       "authorization": token
       },
@@ -146,17 +128,19 @@ export default () => {
 
   return (
     <PageContainer>
-      <ProTable<TableListItem>
+      <ProTable
         columns={columns}
-        request={(params, sorter, filter) => {
-          // 表单搜索项会从 params 传入，传递给后端接口。
-          console.log(params, sorter, filter);
-          return Promise.resolve({
-            data: tableListDataSource,
-            success: true,
-          });
+        request={async (params, sorter, filter) => {
+           const res =  await deployList({
+            'current': params.current?params.current:0,
+            'pageSize': params.pageSize?params.pageSize:5,
+            "procDefName": params.procDefName
+          })
+
+           return {data: res.data,success:res.success}
         }}
-        rowKey="key"
+        scroll={{ x: 'max-content' }} // 使用max-content根据内容自动设置滚动区域的宽度
+        rowKey="procDefId"
         pagination={{
           showQuickJumper: true,
         }}

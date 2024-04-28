@@ -2,17 +2,10 @@
 /* eslint-disable */
 import { request } from '@umijs/max';
 
-export enum ACTIVITI_URL {
-  APPLY_URL = "/api/activiti/apply",
-  DEPLOY_URL = "/api/activiti/deploy",
-  DEPLOYLIST_URL = "/api/activiti/deployList",
-  GETCURTASKBYID_URL = "/api/activiti/getCurTaskById",
-  GETHITASKBYID_URL = "/api/activiti/getHiTaskById",
-}
 
 /** 开启一个流程 POST /activiti/apply */
 export async function apply(body: API.ApplyDto, options?: { [key: string]: any }) {
-  return request<API.Result>(ACTIVITI_URL.APPLY_URL, {
+  return request<API.Result>("/api/activiti/apply", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -22,12 +15,29 @@ export async function apply(body: API.ApplyDto, options?: { [key: string]: any }
   });
 }
 
+/** 完成任务 GET /activiti/completeTask */
+export async function completeTask(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.completeTaskParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result>('/api/activiti/completeTask', {
+    method: 'GET',
+    params: {
+      ...params,
+      completeTaskDto: undefined,
+      ...params['completeTaskDto'],
+    },
+    ...(options || {}),
+  });
+}
+
 /** 部署 POST /activiti/deploy */
 export async function deploy(body: {}, options?: { [key: string]: any }) {
-  return request<API.Result>(ACTIVITI_URL.DEPLOY_URL, {
+  return request<API.Result>('/api/activiti/deploy', {
     method: 'POST',
     headers: {
-      'Content-Type': 'multipart/form-data',
+      'Content-Type': 'application/json',
     },
     data: body,
     ...(options || {}),
@@ -35,9 +45,16 @@ export async function deploy(body: {}, options?: { [key: string]: any }) {
 }
 
 /** 流程定义信息 GET /activiti/deployList */
-export async function deployList(options?: { [key: string]: any }) {
-  return request<API.Result>(ACTIVITI_URL.DEPLOYLIST_URL, {
+export async function deployList(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.deployListParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.Result>('/api/activiti/deployList', {
     method: 'GET',
+    params: {
+      ...params,
+    },
     ...(options || {}),
   });
 }
@@ -48,7 +65,7 @@ export async function getCurTaskById(
   params: API.getCurTaskByIdParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.Result>(ACTIVITI_URL.GETCURTASKBYID_URL, {
+  return request<API.Result>('/api/activiti/getCurTaskById', {
     method: 'GET',
     params: {
       ...params,
@@ -57,13 +74,13 @@ export async function getCurTaskById(
   });
 }
 
-/** 获取用户task GET /activiti/getHiTaskById */
+/** 获取用户历史task GET /activiti/getHiTaskById */
 export async function getHiTaskById(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getHiTaskByIdParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.Result>(ACTIVITI_URL.GETHITASKBYID_URL, {
+  return request<API.Result>('/api/activiti/getHiTaskById', {
     method: 'GET',
     params: {
       ...params,
